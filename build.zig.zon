@@ -1,0 +1,14 @@
+.{
+    .name = .aoc,
+    .fingerprint = 0x808a3f8f305c7ae1,
+    .version = "0.1.0",
+    .dependencies = .{},
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "input",
+        "LICENSE",
+        "README.md",
+    },
+}
