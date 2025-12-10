@@ -45,19 +45,26 @@ pub fn part2(io: Io, allocator: Allocator, input: []const u8) !?u64 {
         if (move.len == 0) {
             break;
         }
-        const moveValue = getMoveValue(move);
+        var moveValue = getMoveValue(move);
         const from = currentPos;
-        currentPos += moveValue;
-        if (moveValue > 0) {
-            zeroCounter += @abs(try std.math.divFloor(i64, currentPos, 100));
+        var add = try std.math.divFloor(u64, @abs(moveValue), 100);
+        const iAdd: i64 = @intCast(add);
+        if (moveValue < 0) {
+            moveValue = moveValue + (iAdd * 100);
         } else {
-            zeroCounter += @abs(try std.math.divCeil(i64, currentPos, 100));
+            moveValue = moveValue - (iAdd * 100);
         }
+        if ((currentPos + moveValue) >= 100 or ((from != 0) and (currentPos + moveValue) <= 0)) {
+            add += 1;
+        }
+        zeroCounter += add;
+        currentPos += moveValue;
         currentPos = @mod(currentPos, 100);
-        if (currentPos == 0) {
-            zeroCounter += 1;
-        }
+        // if (currentPos == 0) {
+        //    add += 1;
+        // }
         std.debug.print("Move {s}, {} {} -> {}, zero: {}\n", .{ move, from, moveValue, currentPos, zeroCounter });
+        std.debug.print("Added: {}\n", .{add});
     }
     _ = .{ io, allocator, input };
     return zeroCounter;
@@ -69,16 +76,16 @@ test "it should do nothing" {
     const input =
         \\L68
         \\L30
-        \\R48
+        \\R248
         \\L5
         \\R60
-        \\L55
-        \\L1
+        \\L455
+        \\L601
         \\L99
         \\R14
-        \\L82
+        \\L282
     ;
 
     try std.testing.expectEqual(3, try part1(io, allocator, input));
-    try std.testing.expectEqual(6, try part2(io, allocator, input));
+    try std.testing.expectEqual(20, try part2(io, allocator, input));
 }
