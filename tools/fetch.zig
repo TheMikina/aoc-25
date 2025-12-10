@@ -9,6 +9,11 @@ const assert = std.debug.assert;
 const builtin = @import("builtin");
 
 pub fn main() !void {
+    const BUFFER_SIZE = 4 * 1024;
+
+    var stderr_buffer: [BUFFER_SIZE]u8 = undefined;
+    var stderr_writer = File.stderr().writer(&stderr_buffer);
+    const stderr = &stderr_writer.interface;
     var debug_allocator: heap.DebugAllocator(.{}) = .init;
     const allocator = switch (builtin.mode) {
         .Debug, .ReleaseSafe => debug_allocator.allocator(),
@@ -89,9 +94,3 @@ fn fetchInput(io: Io, allocator: Allocator, year: []const u8, day: []const u8, s
 
     return try response.toOwnedSlice();
 }
-
-const BUFFER_SIZE = 4 * 1024;
-
-var stderr_buffer: [BUFFER_SIZE]u8 = undefined;
-var stderr_writer = File.stderr().writer(&stderr_buffer);
-const stderr = &stderr_writer.interface;

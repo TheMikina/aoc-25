@@ -10,6 +10,12 @@ const builtin = @import("builtin");
 const problem = @import("problem");
 
 pub fn main() !void {
+    const BUFFER_SIZE = 64 * 1024;
+
+    var stdout_buffer: [BUFFER_SIZE]u8 = undefined;
+    var stdout_writer = File.stdout().writer(&stdout_buffer);
+    const stdout = &stdout_writer.interface;
+
     var debug_allocator: heap.DebugAllocator(.{}) = .init;
     const allocator = switch (builtin.mode) {
         .Debug, .ReleaseSafe => debug_allocator.allocator(),
@@ -44,9 +50,3 @@ pub fn main() !void {
 
     try stdout.flush();
 }
-
-const BUFFER_SIZE = 64 * 1024;
-
-var stdout_buffer: [BUFFER_SIZE]u8 = undefined;
-var stdout_writer = File.stdout().writer(&stdout_buffer);
-const stdout = &stdout_writer.interface;
